@@ -112,7 +112,7 @@
         <h6>Version 10.0 (06.12.2024)</h5>
         <ul>
             <li>Updated CakePHP version</li>
-            <li>Released an open-source snapshot of MMT at: https://github.com/MMT-user/metrics-monitoring-tool.git</li>
+            <li>Released an open-source snapshot of MMT at: https://github.com/MMT-Metrics-Monitoring-Tool/MMT.git</li>
             <li>Implemented unit tests for Controllers</li>
             <li>Created test cases for the project</li>
             <li>Fixed several bugs related to risks</li>
