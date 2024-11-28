@@ -1,0 +1,163 @@
+services:
+  mariadb:
+    image: mariadb:10.3
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: my_app # defaults in config/app.php
+      MARIADB_USER: my_app
+      MARIADB_PASSWORD: secret
+
+    volumes:
+      - type: bind
+        source: sql/
+        target: /docker-entrypoint-initdb.d
+
+      - type: volume
+        source: &data_volume mariadb-data
+        target: /var/lib/mysql
+
+      - &mariadb_socket
+        type: volume
+        source: &socket_volume mariadb-socket
+        target: /var/run/mysqld
+
+    restart: unless-stopped
+    profiles: [local]
+
+  mariadb-testing:
+    image: mariadb:10.3
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: test_myapp # defaults in config/app.php
+      MARIADB_USER: test_myapp
+      MARIADB_PASSWORD: secret
+
+    volumes:
+      - type: bind
+        source: sql/
+        target: /docker-entrypoint-initdb.d
+
+      - type: volume
+        source: &test_data_volume mariadb-test-data
+        target: /var/lib/mysql
+
+      - &mariadb_socket
+        type: volume
+        source: &socket_volume mariadb-socket
+        target: /var/run/mysqld
+
+    restart: unless-stopped
+    profiles: [testing]
+
+  phpmyadmin:
+    depends_on:
+      mariadb:
+        condition: service_started
+
+    image: phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+
+    ports:
+      - mode: host
+        host_ip: &localhost 127.0.0.1
+        target: 80
+        published: 8080
+        protocol: tcp
+
+    restart: unless-stopped
+    profiles: [local]
+
+  composer:
+    image: metricsmonitoring/composer
+    build:
+      context: .
+      target: composer
+
+    user: ${SUDO_UID:-1000}:${SUDO_GID:-1000}
+    volumes:
+      - type: bind
+        source: ./
+        target: &working_dir /mnt/metrics-monitoring-tool
+
+    working_dir: *working_dir
+    command: --no-interaction install
+
+  cakephp:
+    depends_on:
+      composer:
+        condition: service_completed_successfully
+
+      mariadb:
+        condition: service_started
+
+    image: metricsmonitoring/cakephp
+    build:
+      context: .
+      target: cakephp
+
+    volumes:
+      - type: bind
+        source: ./
+        target: /var/www/html
+
+      - *mariadb_socket
+
+    ports:
+      - mode: host
+        host_ip: *localhost
+        target: 80
+        published: 80
+        protocol: tcp
+
+      - mode: host
+        host_ip: *localhost
+        target: 1080
+        published: 8008
+        protocol: tcp
+
+    restart: unless-stopped
+    command: bash -c "set -m; apache2-foreground & mailcatcher --http-ip=0.0.0.0 --foreground --no-quit; %1"
+    profiles: [local]
+
+  cakephp-testing:
+    depends_on:
+      composer:
+        condition: service_completed_successfully
+
+      mariadb-testing:
+        condition: service_started
+
+    image: metricsmonitoring/cakephp
+    build:
+      context: .
+      target: cakephp
+
+    volumes:
+      - type: bind
+        source: ./
+        target: /var/www/html
+
+      - *mariadb_socket
+
+    ports:
+      - mode: host
+        host_ip: *localhost
+        target: 80
+        published: 80
+        protocol: tcp
+
+      - mode: host
+        host_ip: *localhost
+        target: 1080
+        published: 8008
+        protocol: tcp
+
+    restart: unless-stopped
+    command: bash -c "set -m; apache2-foreground & mailcatcher --http-ip=0.0.0.0 --foreground --no-quit; %1"
+    profiles: [testing]
+
+volumes:
+  *data_volume : ~
+  *test_data_volume : ~
+  *socket_volume : ~
