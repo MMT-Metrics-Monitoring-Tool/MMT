@@ -34,7 +34,7 @@ An alternative for Windows and Mac is to install Docker Desktop, but keep in min
 
 To run MMT locally, do the following:
 
-1. `git clone git@github.com:MMT-user/metrics-monitoring-tool.git`
+1. `git clone git@github.com:MMT-Metrics-Monitoring-Tool/MMT.git`
 2. `cd metrics-monitoring-tool`
 3. `cp config/app_local.example.php config/app_local.php`. Use this file to make local changes to CakePHP.
 4. Run `make run` to run local environment
