@@ -1,3 +1,16 @@
+# What is MMT?
+
+Metrics Monitoring Tool is part of Pekka Mäkiaho's PhD work. MMT is in use at Tampere University's courses: Project work and Software Project management.
+It is used for logging working hours in a project, for managing a project and reporting its state, and for observing one project or the whole portfolio visually. With MMT you can observe data at portfolio level, at project level or even see the statistics of an individual project member.
+
+### Previews
+
+Project members view:
+![Screenshot_20241128_173932](https://github.com/user-attachments/assets/4598833f-9ac2-4d75-83c3-38c53473e3fd)
+
+Overview of weekly reports for coaches and admins:
+![image](https://github.com/user-attachments/assets/3355a77c-1d3a-44fc-8d9f-c9f0138e74c0)
+
 # To start with Metrics Monitoring Tool (MMT) 
 
 **It is important to note** that the latest MMT updates have been done with:  
