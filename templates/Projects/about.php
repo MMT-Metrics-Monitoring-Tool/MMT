@@ -16,6 +16,11 @@
         See also <?= $this->Html->link(__('publications'), ['controller' => 'Projects', 'action' => 'publications']) ?> related to MMT.
     </p>
 
+    <h4>Open-source</h4>
+    <p>
+        Open-source snapshot of MMT is available at: <a href="https://github.com/MMT-Metrics-Monitoring-Tool/MMT">https://github.com/MMT-Metrics-Monitoring-Tool/MMT</a>
+    </p>
+
     <h4>Statistic page</h4>
         <p>
         On the Statistic-page you can first see the project manager's opinion on the state of the project at each week indicated with traffic lights. You can see also if the weekly report is missing or if was delivered late (L).
